@@ -1,0 +1,20 @@
+﻿.ttt_square {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    background-color: #00897B;
+    color: #F8F6F4;
+    text-align: center;
+    margin: 5px;
+    vertical-align: top;
+}
+
+.ttt_square:hover {
+    background-color: #29645e;
+}
+
+.ttt_square span {
+    font-size: 20px;
+    line-height: 50px;
+}
