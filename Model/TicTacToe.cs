@@ -11,6 +11,10 @@ namespace Model {
         public bool IsPlayerOneTurn { get; set; } = true;
         public char CurrentChar { get { return IsPlayerOneTurn ? 'X' : 'O'; } }
 
+        public TicTacToe() {
+            ClearField();
+        }
+
         public void SetFieldLength(int length) {
             if (length < 3)
                 length = 3;
