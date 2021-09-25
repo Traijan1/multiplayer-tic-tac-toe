@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Backend.Hubs;
 using Backend;
-using Microsoft.AspNetCore.Http;
+using System.Net.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options => options.AddDefaultPolicy(o => o.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
@@ -17,7 +17,7 @@ app.MapGet("/game/create", (GameManager manager) => {
     Game game = new();
     manager.Games.Add(game);
 
-    return Results.Ok(game.Id);
+    return game.Id;
 });
 
 app.MapHub<EchoHub>("/hub/echo");

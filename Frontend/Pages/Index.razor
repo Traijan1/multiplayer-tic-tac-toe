@@ -1,12 +1,17 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.SignalR.Client
 @inject HttpClient Http
+@inject NavigationManager Nav
 
-<PageTitle>@Title</PageTitle>
+<PageTitle>Start</PageTitle>
+
+<button @onclick="CreateGame">Neues Spiel</button>
 
 @code {
-    [SupplyParameterFromQuery]
-    [Parameter]
-    public string Title { get; set; } = "Default Page";
+    async void CreateGame() {
+        var response = await Http.GetAsync("https://localhost:44381/game/create");
+        var id = await response.Content.ReadAsStringAsync();
 
+        Nav.NavigateTo($"{Nav.BaseUri}game?id={id}");
+    }
 }
