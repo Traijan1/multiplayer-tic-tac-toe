@@ -16,7 +16,6 @@ public class Game {
 
     public Game() {
         Match = new();
-        Match.SetFieldLength(10);
         Users = new();
         id = Guid.NewGuid();
     }

@@ -1,0 +1,15 @@
+﻿@inject IJSRuntime JS
+
+<span>@Text</span><button @onclick="Copy">Copy</button>
+
+@code {
+    [Parameter]
+    public string Text { get; set; }
+
+    [Parameter]
+    public string ToCopy { get; set; }
+
+    async void Copy() {
+        await JS.InvokeVoidAsync("copy", ToCopy);
+    }
+}

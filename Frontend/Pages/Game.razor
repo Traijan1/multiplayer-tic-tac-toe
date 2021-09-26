@@ -4,13 +4,15 @@
 @using Newtonsoft.Json
 
 @inject NavigationManager Nav
+@inject IJSRuntime JS
 
 <PageTitle>@Title</PageTitle>
 
 @if(PlayingChar != ' ') {
-    <div>You're playing: @PlayingChar</div>
+    <div class="playing_char">You're playing: @PlayingChar</div>
 }
 
+<div class="field">
 @if(Board is not null) {
     @for(int x = 0; x < Board.GetLength(0); x++) {
         for(int y = 0; y < Board.GetLength(1); y++) {
@@ -19,17 +21,15 @@
         <br />
     }
 }
+</div>
 
 @if(!string.IsNullOrEmpty(WinnerMessage)) {
-    <span>@WinnerMessage</span> 
-    <br />
+    <div class="winner">@WinnerMessage</div> 
 }
 
-@if(!GameBegin && string.IsNullOrEmpty(ErrorMessage)) {
-    <div>@InvitationLink</div>
+@if(!GameBegin) {
+    <ClipboardCopy Text="@InvitationLinkText" ToCopy="@InvitationLink" />
 }
-
-<div class="error">@ErrorMessage</div>
 
 @code {
     [SupplyParameterFromQuery]
@@ -37,11 +37,11 @@
     public string Id { get; set; }
     
     public string Title { get { return $"Playing Game: {Id}"; } }
-    public string InvitationLink { get { return $"Invite your friends: {Nav.BaseUri}game?id={Id}"; } }
+    public string InvitationLinkText { get { return $"Invite your friends: {InvitationLink}"; } }
+    public string InvitationLink { get { return $"{Nav.BaseUri}game?id={Id}"; } }
 
     public HubConnection Hub { get; private set; }
 
-    public string ErrorMessage { get; private set; }
     public string WinnerMessage { get; private set; }
 
     public char[,] Board { get; private set; }
@@ -83,8 +83,6 @@
     public async void SendMove(int x, int y) =>
         await Hub.SendAsync("CheckMove", Id, x, y);
 
-    void Error(string message) {
-        ErrorMessage = message;
-        StateHasChanged();
-    }
+    async void Error(string message) =>
+        await JS.InvokeVoidAsync("alert", message);
 }

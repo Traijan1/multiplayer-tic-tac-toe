@@ -1,0 +1,34 @@
+﻿.playing_char {
+    position: absolute;
+    top: 40px;
+    left: 50px;
+
+    display: inline-block;
+    background-color: #1f4f47;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.field {
+    position: absolute;
+    top: 40px;
+    left: 45vw;
+}
+
+.invitation {
+    text-align: center;
+    display: inline-block;
+    background-color: #1f4f47;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.winner {
+    text-align: center;
+    background-color: #1f4f47;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+}

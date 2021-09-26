@@ -3,7 +3,7 @@
     width: 50px;
     height: 50px;
     border-radius: 10px;
-    background-color: #00897B;
+    background-color: #2f9991;
     color: #F8F6F4;
     text-align: center;
     margin: 5px;
@@ -11,7 +11,7 @@
 }
 
 .ttt_square:hover {
-    background-color: #29645e;
+    background-color: #88cdca;
 }
 
 .ttt_square span {
