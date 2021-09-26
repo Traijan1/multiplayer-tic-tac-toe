@@ -20,6 +20,7 @@ namespace Model {
                 length = 3;
 
             Field = new char[length, length];
+            ClearField();
         }
 
         public void ClearField(char symbol = ' ') {

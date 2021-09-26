@@ -7,6 +7,10 @@
 
 <PageTitle>@Title</PageTitle>
 
+@if(PlayingChar != ' ') {
+    <div>You're playing: @PlayingChar</div>
+}
+
 @if(Board is not null) {
     @for(int x = 0; x < Board.GetLength(0); x++) {
         for(int y = 0; y < Board.GetLength(1); y++) {
@@ -21,11 +25,11 @@
     <br />
 }
 
-@if(!GameBegin) {
-    <span>@InvitationLink</span>
+@if(!GameBegin && string.IsNullOrEmpty(ErrorMessage)) {
+    <div>@InvitationLink</div>
 }
 
-@ErrorMessage
+<div class="error">@ErrorMessage</div>
 
 @code {
     [SupplyParameterFromQuery]
@@ -41,6 +45,7 @@
     public string WinnerMessage { get; private set; }
 
     public char[,] Board { get; private set; }
+    char PlayingChar { get; set; } = ' ';
 
     public bool IsCurrentMover { get; set; }
     public bool GameBegin { get; set; }
@@ -51,6 +56,7 @@
         Hub.On<string>("GetGame", GetGame);
         Hub.On<string>("Winner", Winner);
         Hub.On<bool>("SetMover", SetMover);
+        Hub.On<char>("SetChar", SetChar);
         await Hub.StartAsync();
 
         await Hub.SendAsync("JoinGame", Id);
@@ -61,6 +67,9 @@
         IsCurrentMover = false;
         StateHasChanged();
     }
+
+    void SetChar(char sign) =>
+        PlayingChar = sign;
 
     void SetMover(bool mover) =>
         IsCurrentMover = mover;

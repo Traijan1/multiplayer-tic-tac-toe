@@ -9,8 +9,6 @@ public class Game {
     public TicTacToe Match { get; private set; }
     public List<string> Users { get; private set; }
 
-    public Dictionary<string, char> PlayerToChar { get; private set; }
-
     Guid id;
     public string Id { get { return id.ToString("N"); } }
 
@@ -18,13 +16,10 @@ public class Game {
 
     public Game() {
         Match = new();
+        Match.SetFieldLength(10);
         Users = new();
-        PlayerToChar = new();
         id = Guid.NewGuid();
     }
-
-    public void SetPlayer(string connId, char sign) =>
-        PlayerToChar[connId] = sign;
 
     public bool AddUser(string connection) {
         if (Users.Count >= 2)

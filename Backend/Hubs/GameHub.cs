@@ -13,6 +13,11 @@ public class GameHub : Hub {
         Manager = manager;
     }
 
+    /// <summary>
+    /// Let a user join a game, and starts the game if 2 users are connected
+    /// </summary>
+    /// <param name="gameId"></param>
+    /// <returns></returns>
     public async Task JoinGame(string gameId) {
         Game game = Manager.GetGame(gameId);
 
@@ -28,10 +33,10 @@ public class GameHub : Hub {
             bool isPlayerOneBeginner = new Random().Next(2) == 0;
 
             await Clients.Client(game.Users[0]).SendAsync("SetMover", isPlayerOneBeginner);
-            game.SetPlayer(game.Users[0], isPlayerOneBeginner ? 'X' : 'O');
+            await Clients.Client(game.Users[0]).SendAsync("SetChar", isPlayerOneBeginner ? 'X' : 'O');
 
             await Clients.Client(game.Users[1]).SendAsync("SetMover", !isPlayerOneBeginner);
-            game.SetPlayer(game.Users[1], !isPlayerOneBeginner ? 'X' : 'O');
+            await Clients.Client(game.Users[1]).SendAsync("SetChar", !isPlayerOneBeginner ? 'X' : 'O');
 
             await Clients.Group(game.Id).SendAsync("GetGame", game.MatchAsJson);
         }
