@@ -8,4 +8,8 @@ public class GameManager {
     public Game GetGame(string id) {
         return Games.Find(game => game.Id == id);
     }
+
+    public Game GetGameByConnectionId(string connId) {
+        return Games.Find(game => game.Users.Exists(id => id == connId));
+    }
 }

@@ -1,6 +1,5 @@
 ﻿@page "/game"
 @using Microsoft.AspNetCore.SignalR.Client
-@using System.Text.Json
 @using Model
 @using Newtonsoft.Json
 
@@ -17,7 +16,12 @@
     }
 }
 
-@if(!string.IsNullOrEmpty(Id)) {
+@if(!string.IsNullOrEmpty(WinnerMessage)) {
+    <span>@WinnerMessage</span> 
+    <br />
+}
+
+@if(!GameBegin) {
     <span>@InvitationLink</span>
 }
 
@@ -27,30 +31,42 @@
     [SupplyParameterFromQuery]
     [Parameter]
     public string Id { get; set; }
+    
     public string Title { get { return $"Playing Game: {Id}"; } }
     public string InvitationLink { get { return $"Invite your friends: {Nav.BaseUri}game?id={Id}"; } }
 
     public HubConnection Hub { get; private set; }
 
     public string ErrorMessage { get; private set; }
+    public string WinnerMessage { get; private set; }
 
     public char[,] Board { get; private set; }
+
     public bool IsCurrentMover { get; set; }
+    public bool GameBegin { get; set; }
 
     protected override async Task OnInitializedAsync() {
         Hub = new HubConnectionBuilder().WithUrl("https://localhost:44381/hub/game").Build();
         Hub.On<string>("Error", Error);
-        Hub.On<bool>("SetMover", SetMover);
         Hub.On<string>("GetGame", GetGame);
+        Hub.On<string>("Winner", Winner);
+        Hub.On<bool>("SetMover", SetMover);
         await Hub.StartAsync();
 
         await Hub.SendAsync("JoinGame", Id);
+    }
+
+    void Winner(string message) {
+        WinnerMessage = message;
+        IsCurrentMover = false;
+        StateHasChanged();
     }
 
     void SetMover(bool mover) =>
         IsCurrentMover = mover;
 
     void GetGame(string json) {
+        GameBegin = true;
         Board = JsonConvert.DeserializeObject<char[,]>(json);
         StateHasChanged(); 
     }
