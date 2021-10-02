@@ -26,9 +26,24 @@
 }
 
 .winner {
-    text-align: center;
+    display: inline-block;
     background-color: #1f4f47;
     color: white;
     padding: 10px;
     border-radius: 10px;
+}
+
+.new_round {
+    margin-top: 10px;
+    border: none;
+    background-color: #1f4f47;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.after_match {
+    position: absolute;
+    top: 80px;
+    left: 50px;
 }

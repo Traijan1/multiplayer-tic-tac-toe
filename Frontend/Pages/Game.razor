@@ -24,11 +24,16 @@
 </div>
 
 @if(!string.IsNullOrEmpty(WinnerMessage)) {
-    <div class="winner">@WinnerMessage</div> 
+    <div class="after_match">
+        <div class="winner">@WinnerMessage</div> 
+        <button @onclick="NewRound" class="new_round">New Round</button>
+    </div>
 }
 
 @if(!GameBegin) {
-    <ClipboardCopy Text="@InvitationLinkText" ToCopy="@InvitationLink" />
+    <Tooltip Text="Click to Copy" AfterClick="You've copied it!">
+        <ClipboardCopy Text="@InvitationLinkText" ToCopy="@InvitationLink" />
+    </Tooltip>
 }
 
 @code {
@@ -57,6 +62,7 @@
         Hub.On<string>("Winner", Winner);
         Hub.On<bool>("SetMover", SetMover);
         Hub.On<char>("SetChar", SetChar);
+        Hub.On("NewGame", NewGame);
         await Hub.StartAsync();
 
         await Hub.SendAsync("JoinGame", Id);
@@ -66,6 +72,10 @@
         WinnerMessage = message;
         IsCurrentMover = false;
         StateHasChanged();
+    }
+
+    void NewGame() {
+        WinnerMessage = string.Empty;
     }
 
     void SetChar(char sign) =>
@@ -78,6 +88,10 @@
         GameBegin = true;
         Board = JsonConvert.DeserializeObject<char[,]>(json);
         StateHasChanged(); 
+    }
+
+    async void NewRound() {
+        await Hub.SendAsync("AllowNewRound", Id);
     }
 
     public async void SendMove(int x, int y) =>

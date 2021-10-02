@@ -29,17 +29,20 @@ public class GameHub : Hub {
         game.AddUser(Context.ConnectionId);        
         await Groups.AddToGroupAsync(Context.ConnectionId, game.Id);
 
-        if (game.Users.Count == 2) {
-            bool isPlayerOneBeginner = new Random().Next(2) == 0;
+        if (game.Users.Count == 2) 
+            await StartGame(game);
+    }
 
-            await Clients.Client(game.Users[0]).SendAsync("SetMover", isPlayerOneBeginner);
-            await Clients.Client(game.Users[0]).SendAsync("SetChar", isPlayerOneBeginner ? 'X' : 'O');
+    async Task StartGame(Game game) {
+        bool isPlayerOneBeginner = new Random().Next(2) == 0;
 
-            await Clients.Client(game.Users[1]).SendAsync("SetMover", !isPlayerOneBeginner);
-            await Clients.Client(game.Users[1]).SendAsync("SetChar", !isPlayerOneBeginner ? 'X' : 'O');
+        await Clients.Client(game.Users[0]).SendAsync("SetMover", isPlayerOneBeginner);
+        await Clients.Client(game.Users[0]).SendAsync("SetChar", isPlayerOneBeginner ? 'X' : 'O');
 
-            await Clients.Group(game.Id).SendAsync("GetGame", game.MatchAsJson);
-        }
+        await Clients.Client(game.Users[1]).SendAsync("SetMover", !isPlayerOneBeginner);
+        await Clients.Client(game.Users[1]).SendAsync("SetChar", !isPlayerOneBeginner ? 'X' : 'O');
+
+        await Clients.Group(game.Id).SendAsync("GetGame", game.MatchAsJson);
     }
 
     /// <summary>
@@ -77,6 +80,23 @@ public class GameHub : Hub {
         }
         else
             await Clients.Caller.SendAsync("SetMover", true);
+    }
+
+    public async Task AllowNewRound(string gameId) {
+        Game game = Manager.GetGame(gameId);
+
+        bool isPlayer = game.Users.Exists(id => id == Context.ConnectionId);
+
+        if (!isPlayer)
+            return;
+
+        bool isNewRoundAllowed = game.UserAllowedNewRound(Context.ConnectionId);
+
+        if(isNewRoundAllowed) {
+            game.NewGame();
+            await Clients.Group(gameId).SendAsync("NewGame");
+            await StartGame(game);
+        }
     }
 
     /// <summary>
