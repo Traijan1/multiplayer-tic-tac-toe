@@ -1,4 +1,5 @@
-# MultiplayerTicTacToe
+# About
 
-A multiplayer TicTacToe with a tiny lobby system for multiple people playing matches. Using .NET 6 newest features like MiniAPI and Blazor WASM.  
-It was a learn project to implement a lobby system. 
+This was a project to try out how to implement a simple server that handles multiple running TicTacToe matches.
+
+It's using .NET 6 with MiniAPI and Blazor WASM.
